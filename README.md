@@ -102,17 +102,25 @@ particularly `probability` - is different, depending on the type of the rule.
 
 ### Clear Rules
 
+Clear rules are defined in a `clear` sub-section of the section corresponding
+to the world name (or `default`) in which they apply. The `clear` sub-section
+is a list of dictionaries, each of which defines one processing action; these
+actions are applied to the chunk in the order they are defined in the
+configuration, skipping any rules that are not enabled.
+
 Clear rules have the following properties:
 
 | Property      | Default  | Description |
 | :---          | :---     | :--- |
+| `block`       |          | The [Bukkit Material](https://hub.spigotmc.org/javadocs/spigot/org/bukkit/Material.html) of the type of block to clear. |
+| `replacement` | STONE    | The [Bukkit Material](https://hub.spigotmc.org/javadocs/spigot/org/bukkit/Material.html) of the type of block to place there instead. |
 | `enabled`     | true     | Whether the rule is enabled (`true` or `false`). |
-| `min-height`  | 0        | |
-| `max-height`  | 0        | |
-| `probability` | 1.0      | |
+| `min-height`  | 0        | The minimum Y coordinate of affected blocks, in the range [0,255]. |
+| `max-height`  | 0        | The maximum Y coordinate of affected blocks, in the range [0,255]. If less than `min-height`, it will be set to `min-height`.|
+| `probability` | 1.0      | The  probability, in the range [0.0,1.0], that a given *block* will be replaced. |
 | `biomes`      | `[]`     | A list of biomes where the rule applies. If empty, the rule affects all biomes. |
 
-Example: replace half of the coal ore blocks between Y0 and Y64 (includsive)
+Example: replace half of the coal ore blocks between Y0 and Y64 (inclusive)
 with clay blocks:
 ```
 rules:
@@ -128,6 +136,12 @@ rules:
 
 ### Generate Rules
 
+Generate rules are defined in a `generate` sub-section of the section
+corresponding to the world name (or `default`) in which they apply. The
+`generate` sub-section is a list of dictionaries, each of which defines one
+processing action; these actions are applied to the chunk in the order they 
+are defined in the configuration, skipping any rules that are not enabled.
+
 Generate rules have the following properties:
 
 | Property      | Default      | Description |
@@ -139,11 +153,11 @@ Generate rules have the following properties:
 | `max-rounds`  | `min-rounds` | The maximum number of times to attempt to generate a deposit, per chunk. If less than `min-rounds`, it will be set to `min-rounds`. |
 | `enabled`     | true         | Whether the rule is enabled (`true` or `false`). |
 | `min-height`  | 0            | The minimum Y coordinate of the centroid of the deposit, in the range [0,255]. |
-| `max-height`  | 64           | The minimum Y coordinate of the centroid of the deposit, in the range [0,255]. If less than `min-height`, it will be set to `min-height`. |
-| `probability` | 1.0          | The probability, in the range [0.0,1.0] that a given round/attempt will generate an ore deposit. |
+| `max-height`  | 64           | The maximum Y coordinate of the centroid of the deposit, in the range [0,255]. If less than `min-height`, it will be set to `min-height`. |
+| `probability` | 1.0          | The probability, in the range [0.0,1.0], that a given *attempt* will generate an ore deposit. |
 | `biomes`      | `[]`         | A list of biomes where the rule applies. If empty, the rule affects all biomes. |
 
-Example: Generate 4-10 block gold ore deposits 30 times per chunk from Y5 to Y60
+Example: generate 4-10 block gold ore deposits 30 times per chunk from Y5 to Y60
 in desert biomes:
 ```
     - block: GOLD_ORE
