@@ -1,0 +1,47 @@
+debug: 
+  config: true
+  processing: true
+  deposits: false
+
+notify: true
+notify-ticks: 600
+period-ticks: 1
+seed: 0
+side: 1
+world: world
+indices:
+  world: 0
+
+replaceable-materials:
+- STONE
+- ANDESITE
+- DIORITE
+- GRANITE
+- DIRT
+- GRAVEL
+- CLAY
+- TERRACOTTA
+- BLACK_TERRACOTTA
+- BLUE_TERRACOTTA
+- BROWN_TERRACOTTA
+- CYAN_TERRACOTTA
+- GRAY_TERRACOTTA
+- GREEN_TERRACOTTA
+- LIGHT_BLUE_TERRACOTTA
+- LIGHT_GRAY_TERRACOTTA
+- LIME_TERRACOTTA
+- MAGENTA_TERRACOTTA
+- ORANGE_TERRACOTTA
+- PINK_TERRACOTTA
+- PURPLE_TERRACOTTA
+- RED_TERRACOTTA
+- WHITE_TERRACOTTA
+- YELLOW_TERRACOTTA 
+- NETHERRACK
+- END_STONE
+  
+rules:   
+  default:
+    clear: []
+    generate: []
+
