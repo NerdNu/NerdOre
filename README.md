@@ -186,11 +186,11 @@ corresponding command, rather than directly in `config.yml`.
 | `notify` | If true, periodic progress notifications are sent to players with the `nerdore.notify` permission. |
 | `notify-ticks` | The period, in ticks (1/20th of a second), between progress notifications. |
 | `period-ticks` | The period, in ticks, between processing distinct chunks. |
-| `seed`* - Seed used to generate ores. If 0, the seed of the current world is used instead. |
-| `side`* - The side length of the square of blocks to process. |
-| `world`* - The current world being processed. |
-| `indices` - A map from world name to most recently processed index in that world. |
-| `replaceable-materials` - A list of [Bukkit API Material](https://hub.spigotmc.org/javadocs/spigot/org/bukkit/Material.html) names of block types that can be replaced by generated ores. 
+| `seed`* | Seed used to generate ores. If 0, the seed of the current world is used instead. |
+| `side`* | The side length of the square of blocks to process. |
+| `world`* | The current world being processed. |
+| `indices` | A map from world name to most recently processed index in that world. |
+| `replaceable-materials` | A list of [Bukkit API Material](https://hub.spigotmc.org/javadocs/spigot/org/bukkit/Material.html) names of block types that can be replaced by generated ores. 
 
 
 Permissions
