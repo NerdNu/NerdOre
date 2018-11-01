@@ -212,6 +212,7 @@ rules:
   world_nether:
     clear:
     - block: LAVA
+      block-state:
         unstable: true
       replacement: LAVA
       replacement-state:
