@@ -21,13 +21,14 @@ public abstract class Rule {
      * @param section the ConfigurationSection.
      */
     protected void load(ConfigurationSection section) {
+        Logger logger = NerdOre.PLUGIN.getLogger();
+
         _enabled = section.getBoolean("enabled", true);
         _minHeight = section.getInt("min-height", 0);
-        _maxHeight = section.getInt("max-height", 64);
+        _maxHeight = section.getInt("max-height", 255);
         _probability = section.getDouble("probability", 1.0);
-        _affectedBiomes = loadBiomes(section.getStringList("biomes"));
+        _affectedBiomes = loadBiomes(section, logger);
 
-        Logger logger = NerdOre.PLUGIN.getLogger();
         if (_minHeight < 0) {
             logger.severe("min-height below 0.");
             _minHeight = 0;
@@ -109,19 +110,25 @@ public abstract class Rule {
 
     // ------------------------------------------------------------------------
     /**
-     * Load a set of Biomes from a configuration string list.
+     * Load a set of Biomes from a configuration section.
      * 
-     * @param biomes the string list of biome names.
+     * @param section the parent section containing the "biomes" string list.
+     * @param logger the logger for logging errors.
      * @return a non-null set of Biomes.
      */
-    protected static Set<Biome> loadBiomes(List<String> biomes) {
+    protected static Set<Biome> loadBiomes(ConfigurationSection section, Logger logger) {
         Set<Biome> result = EnumSet.noneOf(Biome.class);
-        if (biomes != null) {
+        List<String> biomes = section.getStringList("biomes");
+        if (biomes == null) {
+            if (section.contains("biomes")) {
+                logger.severe("Looks like the biomes value is not a string list.");
+            }
+        } else {
             for (String name : biomes) {
                 try {
                     result.add(Biome.valueOf(name.toUpperCase()));
                 } catch (IllegalArgumentException e) {
-                    NerdOre.PLUGIN.getLogger().severe("Invalid biome name: " + name);
+                    logger.severe("Invalid biome name: " + name);
                 }
             }
         }

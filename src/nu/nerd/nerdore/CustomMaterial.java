@@ -37,7 +37,7 @@ public class CustomMaterial {
         try {
             _type = Material.valueOf(materialName.toUpperCase());
         } catch (IllegalArgumentException e) {
-            NerdOre.PLUGIN.getLogger().warning("Invalid material: " + materialName);
+            NerdOre.PLUGIN.getLogger().severe("Invalid material: " + materialName);
         }
     }
 
