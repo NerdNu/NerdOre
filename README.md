@@ -159,7 +159,7 @@ are supported:
 | `max-nearby-entities`   | integer | If set, then this configures the maximum number of similar entities within spawning range of the spawner without it shutting down. |
 
 It is envisaged that the most common use of `block-state` and `replacement-state`
-is to change the type of spawned mobs by replacing `SPAWNER` with `SPAWNER`.
+will be to change the type of spawned mobs by replacing `SPAWNER` with `SPAWNER`.
 For example, to turn 25% of skeleton and zombie spawners in the overworld into
 creeper spawners or husk spawners in a 2:1 ratio:
 ```
@@ -212,6 +212,7 @@ rules:
   world_nether:
     clear:
     - block: LAVA
+        unstable: true
       replacement: LAVA
       replacement-state:
         update-physics: true
