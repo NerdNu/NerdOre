@@ -193,9 +193,9 @@ public class OreTask implements Runnable {
                     if (rule.affectsBiome(world.getBiome(x, z))) {
                         for (int y = rule.getMinHeight(); y <= rule.getMaxHeight(); y++) {
                             Block block = chunk.getBlock(x, y, z);
-                            if (block.getType() == rule.getRemovedMaterial().getType() &&
+                            if (rule.matches(block) &&
                                 _blockRandom.nextDouble() <= rule.getProbability()) {
-                                block.setType(rule.getReplacementMaterial().getType());
+                                rule.apply(block, _blockRandom);
                             }
                         }
                     }
@@ -222,10 +222,10 @@ public class OreTask implements Runnable {
                 continue;
             }
 
-            int rounds = nextInt(_random, rule.getMinRounds(), rule.getMaxRounds());
+            int rounds = Util.nextInt(_random, rule.getMinRounds(), rule.getMaxRounds());
             for (int i = 0; i < rounds; i++) {
                 int x = chunk.getX() * 16 + _random.nextInt(16);
-                int y = nextInt(_random, rule.getMinHeight(), rule.getMaxHeight());
+                int y = Util.nextInt(_random, rule.getMinHeight(), rule.getMaxHeight());
                 int z = chunk.getZ() * 16 + _random.nextInt(16);
 
                 if (rule.affectsBiome(world.getBiome(x, z)) && _random.nextDouble() < rule.getProbability()) {
@@ -247,7 +247,7 @@ public class OreTask implements Runnable {
      */
     protected void generate(World world, int x, int y, int z, OreRule rule) {
         Material material = rule.getMaterial().getType();
-        int size = nextInt(_blockRandom, rule.getMinSize(), rule.getMaxSize());
+        int size = Util.nextInt(_blockRandom, rule.getMinSize(), rule.getMaxSize());
 
         // Sizes less than 3 generate no blocks at all and size 3 generates less
         // than the number of rounds. So proceed as if size is at least 4, but
@@ -348,19 +348,6 @@ public class OreTask implements Runnable {
                                            NerdOre.CONFIG.getIndex(), side, side, blocks, blocks, NerdOre.CONFIG.WORLD);
             Bukkit.getServer().broadcast(ChatColor.translateAlternateColorCodes('&', message), "nerdore.notify");
         }
-    }
-
-    // ------------------------------------------------------------------------
-    /**
-     * Return a random integer in the range [min,max].
-     *
-     * @param random the Random to use.
-     * @param min the minimum possible value.
-     * @param max the maximum possible value.
-     * @return a random integer in the range [min,max].
-     */
-    protected int nextInt(Random random, int min, int max) {
-        return min + random.nextInt(max - min + 1);
     }
 
     // ------------------------------------------------------------------------

@@ -110,15 +110,17 @@ configuration, skipping any rules that are not enabled.
 
 Clear rules have the following properties:
 
-| Property      | Default  | Description |
-| :---          | :---     | :--- |
-| `block`       |          | The [Bukkit Material](https://hub.spigotmc.org/javadocs/spigot/org/bukkit/Material.html) of the type of block to clear. |
-| `replacement` | STONE    | The [Bukkit Material](https://hub.spigotmc.org/javadocs/spigot/org/bukkit/Material.html) of the type of block to place there instead. |
-| `enabled`     | true     | Whether the rule is enabled (`true` or `false`). |
-| `min-height`  | 0        | The minimum Y coordinate of affected blocks, in the range [0,255]. |
-| `max-height`  | 0        | The maximum Y coordinate of affected blocks, in the range [0,255]. If less than `min-height`, it will be set to `min-height`.|
-| `probability` | 1.0      | The  probability, in the range [0.0,1.0], that a given *block* will be replaced. |
-| `biomes`      | `[]`     | A list of biomes where the rule applies. If empty, the rule affects all biomes. |
+| Property            | Default  | Description |
+| :---                | :---     | :--- |
+| `block`             |          | The [Bukkit Material](https://hub.spigotmc.org/javadocs/spigot/org/bukkit/Material.html) of the type of block to clear. |
+| `block-state`       | {}       | A map of properties that place further restrictions on the state of blocks that will be matched for replacement, beyond just their Material. If empty or omitted, only the block's Material is considered. The properties listed under `block-state` depend on the `block`. See the tables below. |
+| `replacement`       | STONE    | The [Bukkit Material](https://hub.spigotmc.org/javadocs/spigot/org/bukkit/Material.html) of the type of block to place there instead. |
+| `replacement-state` | {}       | A map that defines properties of the replacement block beyond just its Material. The properties listed under `replacement-state` depend on the `replacement`. See the tables below. |
+| `enabled`           | true     | Whether the rule is enabled (`true` or `false`). |
+| `min-height`        | 0        | The minimum Y coordinate of affected blocks, in the range [0,255]. |
+| `max-height`        | 255      | The maximum Y coordinate of affected blocks, in the range [0,255]. If less than `min-height`, it will be set to `min-height`.|
+| `probability`       | 1.0      | The  probability, in the range [0.0,1.0], that a given *block* will be replaced. |
+| `biomes`            | `[]`     | A list of biomes where the rule applies. If empty, the rule affects all biomes. |
 
 Example: replace half of the coal ore blocks between Y0 and Y64 (inclusive)
 with clay blocks:
@@ -131,6 +133,88 @@ rules:
       probability: 0.5
       min-height: 0
       max-height: 64
+```
+
+#### `block-state` and `replacement-state` for Spawners
+
+When `block` is `SPAWNER`, `block-state` can contain the following properties:
+
+| Property                | Type     | Description |
+| :---                    | :---     | :--- |
+| `spawned-types`         | list     | A list of [Bukkit EntityType](https://hub.spigotmc.org/javadocs/spigot/org/bukkit/entity/EntityType.html)s of entities that the spawner can spawn. If empty, the rule matches all spawners for replacement, regardless of what they spawn. If the list is not empty, then only spawners that spawn one of the listed types will be replaced. |
+
+When `replacement` is `SPAWNER`, `replacement-state` defines
+[CreatureSpawner BlockState](https://hub.spigotmc.org/javadocs/spigot/org/bukkit/block/CreatureSpawner.html)
+properties for the `SPAWNER` block that will be placed. The following properties
+are supported:
+
+| Property                | Type    | Description |
+| :---                    | :---    | :--- |
+| `spawned-types`         | list    | If not the empty list, then a [Bukkit EntityType](https://hub.spigotmc.org/javadocs/spigot/org/bukkit/entity/EntityType.html) is selected at random from the list, and the spawner is configured to spawn that type. The list can contain duplicate entries, allowing the random selection to be biased to those types that appear more frequently. |
+| `required-player-range` | integer | If set, then this configures the maximum range a player can be for the spawner to be active as a whole number of blocks. |
+| `min-delay-ticks`       | integer | If set, then this configures the minimum delay in ticks until the next round of spawns. |
+| `max-delay-ticks`       | integer | If set, then this configures the maximum delay in ticks until the next round of spawns. |
+| `spawn-count`           | integer | If set, then this configures the number of mobs to attempt to spawn. |
+| `spawn-range`           | integer | If set, then this configures the radius of the horizontal square around the spawner where mobs spawn, measured in blocks. |
+| `max-nearby-entities`   | integer | If set, then this configures the maximum number of similar entities within spawning range of the spawner without it shutting down. |
+
+It is envisaged that the most common use of `block-state` and `replacement-state`
+is to change the type of spawned mobs by replacing `SPAWNER` with `SPAWNER`.
+For example, to turn 25% of skeleton and zombie spawners in the overworld into
+creeper spawners or husk spawners in a 2:1 ratio:
+```
+rules:
+  world:
+    clear:
+    - block: SPAWNER
+      block-state:
+        spawned-types: [SKELETON, ZOMBIE]
+      probability: 0.25
+      replacement: SPAWNER
+      replacement-state:
+        spawned-types: [CREEPER, CREEPER, HUSK]
+```
+
+However, there is no requirement to replace a spawner with another spawner.
+You could turn certain types of spawners into (for example) air, or you could
+convert a specific marker block (e.g. stained glass) into a spawner. For a more
+concrete example, here is the rule to turn the cauldron in witch huts (in swamp
+biomes) into a witch spawner:
+```
+rules:
+  world:
+    clear:
+    - block: CAULDRON
+      replacement: SPAWNER
+      replacement-state:
+        spawned-types: [WITCH]
+      biomes: [SWAMP, SWAMP_HILLS]
+```
+
+
+#### `block-state` and `replacement-state` for Water or Lava
+
+When `block` is `WATER` or `LAVA`, `block-state` can contain the following properties:
+
+| Property                | Type     | Description |
+| :---                    | :---     | :--- |
+| `unstable`              | boolean  | If true, only unstable source blocks (those that could flow on a block update) are targeted for replacement. For the purpose of this check, a liquid block is considered unstable if it has AIR or CAVE_AIR to the side of it, or below it. If false, all blocks of the matching Material (`WATER` or `LAVA`) will be replaced, subject to the other matching criteria of the rule (e.g. biome). |
+
+When `replacement` is `WATER` or `LAVA`, `replacement-state` can have the following properties:
+
+| Property                | Type    | Description |
+| :---                    | :---    | :--- |
+| `update-physics`        | boolean | If true, the replacement block will receive a physics update, thereby causing liquids to flow. |
+
+For example, to make lava blocks flow in the nether:
+```
+rules:
+  world_nether:
+    clear:
+    - block: LAVA
+      replacement: LAVA
+      replacement-state:
+        update-physics: true
 ```
 
 
@@ -153,7 +237,7 @@ Generate rules have the following properties:
 | `max-rounds`  | `min-rounds` | The maximum number of times to attempt to generate a deposit, per chunk. If less than `min-rounds`, it will be set to `min-rounds`. |
 | `enabled`     | true         | Whether the rule is enabled (`true` or `false`). |
 | `min-height`  | 0            | The minimum Y coordinate of the centroid of the deposit, in the range [0,255]. |
-| `max-height`  | 64           | The maximum Y coordinate of the centroid of the deposit, in the range [0,255]. If less than `min-height`, it will be set to `min-height`. |
+| `max-height`  | 255          | The maximum Y coordinate of the centroid of the deposit, in the range [0,255]. If less than `min-height`, it will be set to `min-height`. |
 | `probability` | 1.0          | The probability, in the range [0.0,1.0], that a given *attempt* will generate an ore deposit. |
 | `biomes`      | `[]`         | A list of biomes where the rule applies. If empty, the rule affects all biomes. |
 

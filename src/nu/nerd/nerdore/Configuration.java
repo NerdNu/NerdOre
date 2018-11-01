@@ -142,8 +142,8 @@ public class Configuration {
         ConfigurationSection rules = config.getConfigurationSection("rules");
         for (String worldName : rules.getKeys(false)) {
             ConfigurationSection section = rules.getConfigurationSection(worldName);
-            List<OreRule> oreRules = loadRulesFromSection(section, "generate", OreRule::new);
-            List<ClearRule> clearRules = loadRulesFromSection(section, "clear", ClearRule::new);
+            List<OreRule> oreRules = loadRulesFromSection(section, "generate", OreRule::new, logger);
+            List<ClearRule> clearRules = loadRulesFromSection(section, "clear", ClearRule::new, logger);
             if (worldName.equals("default")) {
                 DEFAULT_ORE_RULES = oreRules;
                 DEFAULT_CLEAR_RULES = clearRules;
@@ -314,10 +314,12 @@ public class Configuration {
      *        to load OreRules, or "clear" to load ClearRules.
      * @param ctor a lambda that calls the constructor of {@link OreRule} or
      *        {@link ClearRule}, as appropriate to ruleListName.
+     * @param logger used for logging.
      */
     protected static <R extends Rule> List<R> loadRulesFromSection(ConfigurationSection worldSection,
                                                                    String ruleListName,
-                                                                   Function<ConfigurationSection, R> ctor) {
+                                                                   Function<ConfigurationSection, R> ctor,
+                                                                   Logger logger) {
         List<R> result = new ArrayList<R>();
         if (worldSection == null) {
             return result;
@@ -328,8 +330,8 @@ public class Configuration {
         if (maps != null) {
             for (Map<String, Object> ruleMap : maps) {
                 MemoryConfiguration config = new MemoryConfiguration();
-                config.addDefaults(ruleMap);
-                R rule = ctor.apply(config.getDefaults());
+                populateConfigurationSection(config, ruleMap);
+                R rule = ctor.apply(config);
                 if (rule.isValid()) {
                     result.add(rule);
                 }
@@ -338,4 +340,26 @@ public class Configuration {
 
         return result;
     }
+
+    // ------------------------------------------------------------------------
+    /**
+     * Add a Map<String,Object> of values to a ConfigurationSection, creating
+     * sub-sections recursively as needed.
+     * 
+     * Using ConfigurationSection.addDefaults(Map<String,Object>) does not work
+     * when there are subordinate ConfigurationSections, so here we are.
+     */
+    @SuppressWarnings("unchecked")
+    protected static void populateConfigurationSection(ConfigurationSection section, Map<String, Object> map) {
+        for (Entry<String, Object> entry : map.entrySet()) {
+            Object value = entry.getValue();
+            if (value instanceof Map<?, ?>) {
+                ConfigurationSection subSection = section.createSection(entry.getKey());
+                populateConfigurationSection(subSection, (Map<String, Object>) entry.getValue());
+            } else {
+                section.set(entry.getKey(), entry.getValue());
+            }
+        }
+    }
+
 } // class Configuration
