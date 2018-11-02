@@ -46,12 +46,18 @@ public class MatcherForSpawner implements Matcher {
 
     // ------------------------------------------------------------------------
     /**
-     * @see java.util.function.Predicate#test(java.lang.Object)
+     * @see Matcher#matches(BlockState, StringBuilder)
      */
     @Override
-    public boolean test(BlockState state) {
+    public boolean matches(BlockState state, StringBuilder message) {
         CreatureSpawner spawnerState = (CreatureSpawner) state;
-        return _spawnedTypes.isEmpty() || _spawnedTypes.contains(spawnerState.getSpawnedType());
+        if (_spawnedTypes.isEmpty() || _spawnedTypes.contains(spawnerState.getSpawnedType())) {
+            if (message != null) {
+                message.append(" (").append(spawnerState.getSpawnedType()).append(')');
+            }
+            return true;
+        }
+        return false;
     }
 
     // ------------------------------------------------------------------------

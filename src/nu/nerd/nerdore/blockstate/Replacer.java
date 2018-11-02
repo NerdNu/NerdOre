@@ -34,8 +34,10 @@ public interface Replacer {
      * 
      * @param state the state of the block to alter.
      * @param random the RNG to use.
+     * @param message a StringBuilder used to compose the logged message; null
+     *        if not logged.
      */
-    public void apply(BlockState state, Random random);
+    public void apply(BlockState state, Random random, StringBuilder message);
 
     // ------------------------------------------------------------------------
     /**

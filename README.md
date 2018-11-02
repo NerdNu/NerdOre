@@ -121,6 +121,7 @@ Clear rules have the following properties:
 | `max-height`        | 255      | The maximum Y coordinate of affected blocks, in the range [0,255]. If less than `min-height`, it will be set to `min-height`.|
 | `probability`       | 1.0      | The  probability, in the range [0.0,1.0], that a given *block* will be replaced. |
 | `biomes`            | `[]`     | A list of biomes where the rule applies. If empty, the rule affects all biomes. |
+| `logged`            | false    | If true, the coordinates, old Material and new Material of each block cleared are logged to the console. (Be careful: this could result in a huge volume of log messages.) |
 
 Example: replace half of the coal ore blocks between Y0 and Y64 (inclusive)
 with clay blocks:
@@ -242,6 +243,7 @@ Generate rules have the following properties:
 | `max-height`  | 255          | The maximum Y coordinate of the centroid of the deposit, in the range [0,255]. If less than `min-height`, it will be set to `min-height`. |
 | `probability` | 1.0          | The probability, in the range [0.0,1.0], that a given *attempt* will generate an ore deposit. |
 | `biomes`      | `[]`         | A list of biomes where the rule applies. If empty, the rule affects all biomes. |
+| `logged`      | false        | If true, details of each generated deposit are logged to the console. |
 
 Example: generate 4-10 block gold ore deposits 30 times per chunk from Y5 to Y60
 in desert biomes:
@@ -268,7 +270,6 @@ corresponding command, rather than directly in `config.yml`.
 | :--- | :--- |
 | `debug.config` | If true, log the configuration on reload. |
 | `debug.processing` | If true, log processing steps. |
-| `debug.deposits` | If true, log coordinates and type of generated ore deposits. |
 | `notify` | If true, periodic progress notifications are sent to players with the `nerdore.notify` permission. |
 | `notify-ticks` | The period, in ticks (1/20th of a second), between progress notifications. |
 | `period-ticks` | The period, in ticks, between processing distinct chunks. |

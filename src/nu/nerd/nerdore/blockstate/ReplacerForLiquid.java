@@ -29,7 +29,8 @@ public class ReplacerForLiquid implements Replacer {
 
     // ------------------------------------------------------------------------
     /**
-     * @see nu.nerd.nerdore.blockstate.Replacer#apply(BlockState, Random)
+     * @see nu.nerd.nerdore.blockstate.Replacer#apply(BlockState, Random,
+     *      StringBuilder)
      * 
      *      NOTE: BlockState.update(true,true) does not make liquids flow as of
      *      late Oct 2018 - early Nov 2018, per
@@ -45,12 +46,15 @@ public class ReplacerForLiquid implements Replacer {
      *      back to liquid.
      */
     @Override
-    public void apply(BlockState state, Random random) {
+    public void apply(BlockState state, Random random, StringBuilder message) {
         if (_updatePhysics) {
             Block block = state.getBlock();
             Material type = block.getType();
             block.setType(Material.AIR, true);
             block.setType(type, true);
+            if (message != null && _updatePhysics) {
+                message.append(" (update physics)");
+            }
         }
     }
 

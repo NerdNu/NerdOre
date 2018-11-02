@@ -33,10 +33,10 @@ public class MatcherForLiquid implements Matcher {
 
     // ------------------------------------------------------------------------
     /**
-     * @see java.util.function.Predicate#test(java.lang.Object)
+     * @see Matcher#matches(BlockState, StringBuilder)
      */
     @Override
-    public boolean test(BlockState state) {
+    public boolean matches(BlockState state, StringBuilder message) {
         if (!_unstable) {
             return true;
         }
@@ -56,6 +56,9 @@ public class MatcherForLiquid implements Matcher {
         for (Block neighbour : checked) {
             if (neighbour != null && (neighbour.getType() == Material.AIR ||
                                       neighbour.getType() == Material.CAVE_AIR)) {
+                if (message != null) {
+                    message.append(" (unstable)");
+                }
                 return true;
             }
         }

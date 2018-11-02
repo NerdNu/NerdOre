@@ -28,6 +28,7 @@ public abstract class Rule {
         _maxHeight = section.getInt("max-height", 255);
         _probability = section.getDouble("probability", 1.0);
         _affectedBiomes = loadBiomes(section, logger);
+        _logged = section.getBoolean("logged");
 
         if (_minHeight < 0) {
             logger.severe("min-height below 0.");
@@ -110,6 +111,16 @@ public abstract class Rule {
 
     // ------------------------------------------------------------------------
     /**
+     * Return true if rule processing actions are logged.
+     * 
+     * @return true if rule processing actions are logged.
+     */
+    public boolean isLogged() {
+        return _logged;
+    }
+
+    // ------------------------------------------------------------------------
+    /**
      * Load a set of Biomes from a configuration section.
      * 
      * @param section the parent section containing the "biomes" string list.
@@ -154,6 +165,9 @@ public abstract class Rule {
         } else {
             s.append(_affectedBiomes.stream().map(Biome::toString).collect(Collectors.joining(", ")));
         }
+        if (_logged) {
+            s.append(", logged");
+        }
 
         if (!isEnabled()) {
             s.append(" (DISABLED)");
@@ -187,5 +201,10 @@ public abstract class Rule {
      * The set of affected Biomes. If empty, all biomes are affected.
      */
     protected Set<Biome> _affectedBiomes;
+
+    /**
+     * If true, rule processing actions are logged.
+     */
+    protected boolean _logged;
 
 } // class Rule

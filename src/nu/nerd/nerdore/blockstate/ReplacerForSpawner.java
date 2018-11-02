@@ -108,31 +108,68 @@ public class ReplacerForSpawner implements Replacer {
 
     // ------------------------------------------------------------------------
     /**
-     * @see nu.nerd.nerdore.blockstate.Replacer#apply(BlockState, Random)
+     * @see nu.nerd.nerdore.blockstate.Replacer#apply(BlockState, Random,
+     *      StringBuilder)
      */
     @Override
-    public void apply(BlockState state, Random random) {
+    public void apply(BlockState state, Random random, StringBuilder message) {
         CreatureSpawner spawnerState = (CreatureSpawner) state;
+        if (message != null) {
+            message.append(" (");
+        }
+        String separator = "";
         if (!_spawnedTypes.isEmpty()) {
-            spawnerState.setSpawnedType(_spawnedTypes.get(random.nextInt(_spawnedTypes.size())));
+            EntityType newType = _spawnedTypes.get(random.nextInt(_spawnedTypes.size()));
+            spawnerState.setSpawnedType(newType);
+            if (message != null) {
+                message.append(separator).append(newType);
+                separator = ", ";
+            }
         }
         if (_requiredPlayerRange != null) {
             spawnerState.setRequiredPlayerRange(_requiredPlayerRange);
+            if (message != null) {
+                message.append(separator).append("required-player-range: ").append(_requiredPlayerRange);
+                separator = ", ";
+            }
         }
         if (_minDelayTicks != null) {
             spawnerState.setMinSpawnDelay(_minDelayTicks);
+            if (message != null) {
+                message.append(separator).append("min-delay-ticks: ").append(_minDelayTicks);
+                separator = ", ";
+            }
         }
         if (_maxDelayTicks != null) {
             spawnerState.setMaxSpawnDelay(_maxDelayTicks);
+            if (message != null) {
+                message.append(separator).append("max-delay-ticks: ").append(_maxDelayTicks);
+                separator = ", ";
+            }
         }
         if (_spawnCount != null) {
             spawnerState.setSpawnCount(_spawnCount);
+            if (message != null) {
+                message.append(separator).append("spawn-count: ").append(_spawnCount);
+                separator = ", ";
+            }
         }
         if (_spawnRange != null) {
             spawnerState.setSpawnRange(_spawnRange);
+            if (message != null) {
+                message.append(separator).append("spawn-range: ").append(_spawnRange);
+                separator = ", ";
+            }
         }
         if (_maxNearbyEntities != null) {
             spawnerState.setMaxNearbyEntities(_maxNearbyEntities);
+            if (message != null) {
+                message.append(separator).append("max-nearby-entities: ").append(_maxNearbyEntities);
+                separator = ", ";
+            }
+        }
+        if (message != null) {
+            message.append(')');
         }
         state.update();
     }

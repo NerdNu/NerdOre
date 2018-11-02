@@ -33,11 +33,6 @@ public class Configuration {
     public boolean DEBUG_PROCESSING;
 
     /**
-     * If true, generated deposits are logged.
-     */
-    public boolean DEBUG_DEPOSITS;
-
-    /**
      * If true, players with the nerdore.notify permission will receive
      * broadcasts about NerdOre progress.
      */
@@ -123,7 +118,6 @@ public class Configuration {
 
         DEBUG_CONFIG = config.getBoolean("debug.config");
         DEBUG_PROCESSING = config.getBoolean("debug.processing");
-        DEBUG_DEPOSITS = config.getBoolean("debug.deposits");
         NOTIFY = config.getBoolean("notify");
         NOTIFY_TICKS = config.getInt("notify-ticks");
         PERIOD_TICKS = config.getInt("period-ticks");
@@ -164,7 +158,6 @@ public class Configuration {
 
         if (DEBUG_CONFIG) {
             logger.info("DEBUG_PROCESSING: " + DEBUG_PROCESSING);
-            logger.info("DEBUG_DEPOSITS: " + DEBUG_DEPOSITS);
             logger.info("NOTIFY: " + NOTIFY);
             logger.info("PERIOD_TICKS: " + PERIOD_TICKS);
             logger.info("SEED: " + SEED);
@@ -198,7 +191,6 @@ public class Configuration {
         FileConfiguration config = NerdOre.PLUGIN.getConfig();
         config.set("debug.config", DEBUG_CONFIG);
         config.set("debug.processing", DEBUG_PROCESSING);
-        config.set("debug.deposits", DEBUG_DEPOSITS);
         config.set("notify", NOTIFY);
         config.set("period-ticks", PERIOD_TICKS);
         config.set("seed", SEED);

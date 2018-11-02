@@ -193,9 +193,13 @@ public class OreTask implements Runnable {
                     if (rule.affectsBiome(world.getBiome(x, z))) {
                         for (int y = rule.getMinHeight(); y <= rule.getMaxHeight(); y++) {
                             Block block = chunk.getBlock(x, y, z);
-                            if (rule.matches(block) &&
+                            StringBuilder message = rule.isLogged() ? new StringBuilder() : null;
+                            if (rule.matches(block, message) &&
                                 _blockRandom.nextDouble() <= rule.getProbability()) {
-                                rule.apply(block, _blockRandom);
+                                rule.apply(block, _blockRandom, message);
+                                if (rule.isLogged()) {
+                                    NerdOre.PLUGIN.getLogger().info(message.toString());
+                                }
                             }
                         }
                     }
@@ -254,7 +258,7 @@ public class OreTask implements Runnable {
         // stop generating after placing size blocks.
         int effectiveSize = Math.max(4, size);
 
-        if (NerdOre.CONFIG.DEBUG_DEPOSITS) {
+        if (rule.isLogged()) {
             Logger logger = NerdOre.PLUGIN.getLogger();
             logger.info("Generate " + size + " x " + material +
                         " at " + x + " " + y + " " + z + " in " + NerdOre.CONFIG.WORLD);

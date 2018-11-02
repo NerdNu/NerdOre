@@ -96,11 +96,17 @@ public class ClearRule extends Rule {
      * Return true if this ClearRule is applicable to the specified Block.
      * 
      * @param block the Block.
+     * @param message a StringBuilder used to compose the logged message.
      * @return true if this ClearRule is applicable to the specified Block.
      */
-    public boolean matches(Block block) {
-        return _removedMaterial.getType() == block.getType() &&
-               (_matcher == null || _matcher.test(block.getState()));
+    public boolean matches(Block block, StringBuilder message) {
+        if (_removedMaterial.getType() == block.getType()) {
+            if (isLogged()) {
+                message.append("Clear ").append(getRemovedMaterial().getType());
+            }
+            return (_matcher == null || _matcher.matches(block.getState(), message));
+        }
+        return false;
     }
 
     // ------------------------------------------------------------------------
@@ -109,11 +115,22 @@ public class ClearRule extends Rule {
      * 
      * @param block the Block.
      * @param random the RNG to use.
+     * @param message a StringBuilder used to compose the logged message; null
+     *        if not logged.
      */
-    public void apply(Block block, Random random) {
+    public void apply(Block block, Random random, StringBuilder message) {
+        if (isLogged()) {
+            message.append(" with ").append(_replacementMaterial.getType());
+        }
         block.setType(_replacementMaterial.getType());
         if (_replacer != null) {
-            _replacer.apply(block.getState(), random);
+            _replacer.apply(block.getState(), random, message);
+        }
+        if (isLogged()) {
+            message.append(" at ").append(NerdOre.CONFIG.WORLD).append(",");
+            message.append(block.getX()).append(',');
+            message.append(block.getY()).append(',');
+            message.append(block.getZ());
         }
     }
 
