@@ -52,7 +52,7 @@ public class ReplacerForLiquid implements Replacer {
             Material type = block.getType();
             block.setType(Material.AIR, true);
             block.setType(type, true);
-            if (message != null && _updatePhysics) {
+            if (message != null) {
                 message.append(" (update physics)");
             }
         }

@@ -30,7 +30,7 @@ public interface Matcher {
      * Return true if the BlockState should be affected by the {@link ClearRule}
      * that owns this Matcher.
      * 
-     * @param state the BlockSTate.
+     * @param state the BlockState.
      * @param message if not-null, this StringBuilder is used to log details of
      *        the matching BlockState.
      */
