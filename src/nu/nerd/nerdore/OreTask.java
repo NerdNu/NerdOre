@@ -10,6 +10,7 @@ import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
+import org.bukkit.block.Biome;
 import org.bukkit.block.Block;
 
 // ----------------------------------------------------------------------------
@@ -188,9 +189,12 @@ public class OreTask implements Runnable {
                 continue;
             }
 
+            int worldChunkX = chunk.getX() * 16;
+            int worldChunkZ = chunk.getZ() * 16;
             for (int x = 0; x < 16; ++x) {
                 for (int z = 0; z < 16; ++z) {
-                    if (rule.affectsBiome(world.getBiome(x, z))) {
+                    Biome biome = world.getBiome(worldChunkX + x, worldChunkZ + z);
+                    if (rule.affectsBiome(biome)) {
                         for (int y = rule.getMinHeight(); y <= rule.getMaxHeight(); y++) {
                             Block block = chunk.getBlock(x, y, z);
                             StringBuilder message = rule.isLogged() ? new StringBuilder() : null;

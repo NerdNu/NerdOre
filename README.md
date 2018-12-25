@@ -56,6 +56,7 @@ Command Reference
  * `/nerdore index [<num>]` - Set or show the next converted index 
    (non-negative) in the current world.
  * `/nerdore rules` - List the rules for the player's current world.
+ * `/nerdore location` - Show the player's current world and biome.
 
 
 Processing Rule Configuration

@@ -4,7 +4,7 @@
 	<groupId>nu.nerd</groupId>
 	<name>NerdOre</name>
 	<artifactId>${project.name}</artifactId>
-	<version>1.0.0</version>
+	<version>1.0.1</version>
 	<packaging>jar</packaging>
 	<description>NerdOre is a Bukkit plugin that replaces blocks and generates ores.</description>
 	<url>https://github.com/NerdNu/${project.name}</url>

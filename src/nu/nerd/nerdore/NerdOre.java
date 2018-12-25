@@ -2,7 +2,9 @@ package nu.nerd.nerdore;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Location;
 import org.bukkit.World;
+import org.bukkit.block.Biome;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -110,6 +112,10 @@ public class NerdOre extends JavaPlugin {
             }
             if (args.length == 1 && args[0].equalsIgnoreCase("rules")) {
                 cmdRules(sender);
+                return true;
+            }
+            if (args.length == 1 && args[0].equalsIgnoreCase("location")) {
+                cmdLocation(sender);
                 return true;
             }
         }
@@ -321,7 +327,26 @@ public class NerdOre extends JavaPlugin {
 
     // ------------------------------------------------------------------------
     /**
-     * Task to process ores. Runs every tick, irrespective of configured PERIOD_TICKS.
+     * Handle /nerdore location.
+     *
+     * @param sender the CommandSender.
+     */
+    protected void cmdLocation(CommandSender sender) {
+        if (!(sender instanceof Player)) {
+            sender.sendMessage(ChatColor.RED + "You need to be in-game to use this command.");
+            return;
+        }
+
+        Location loc = ((Player) sender).getLocation();
+        World world = loc.getWorld();
+        Biome biome = world.getBiome(loc.getBlockX(), loc.getBlockZ());
+        sender.sendMessage(ChatColor.DARK_GREEN + "Current location: " + biome + " in " + world.getName() + ".");
+    }
+
+    // ------------------------------------------------------------------------
+    /**
+     * Task to process ores. Runs every tick, irrespective of configured
+     * PERIOD_TICKS.
      */
     protected OreTask _task = new OreTask();
 

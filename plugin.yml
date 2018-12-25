@@ -33,3 +33,4 @@ commands:
       §e/<command> side §f[§e<num>§f] - Set or show the side length in blocks.
       §e/<command> index §f[§e<num>§f] - Set or show the next converted index (non-negative) in the current world.
       §e/<command> rules§f - List the rules for the player's current world.
+      §e/<command> location§f - Show the player's current world and biome.
